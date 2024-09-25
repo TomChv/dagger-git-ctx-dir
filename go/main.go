@@ -15,23 +15,21 @@
 package main
 
 import (
-	"context"
 	"dagger/test/internal/dagger"
 )
 
 type Test struct{}
 
-// Returns a container that echoes whatever string argument is provided
-func (m *Test) ContainerEcho(stringArg string) *dagger.Container {
-	return dag.Container().From("alpine:latest").WithExec([]string{"echo", stringArg})
+func (m *Test) Abs(
+	// +defaultPath="/"
+	abs *dagger.Directory,
+) *dagger.Directory {
+	return abs
 }
 
-// Returns lines that match a pattern in the files of the provided Directory
-func (m *Test) GrepDir(ctx context.Context, directoryArg *dagger.Directory, pattern string) (string, error) {
-	return dag.Container().
-		From("alpine:latest").
-		WithMountedDirectory("/mnt", directoryArg).
-		WithWorkdir("/mnt").
-		WithExec([]string{"grep", "-R", pattern, "."}).
-		Stdout(ctx)
+func (m *Test) Rel(
+	// +defaultPath="."
+	rel *dagger.Directory,
+) *dagger.Directory {
+	return rel
 }
